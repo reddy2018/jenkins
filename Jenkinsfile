@@ -6,14 +6,14 @@ pipeline {
 
     stage('Checkout Source') {
       steps {
-        git url:'https://github.com/vamsijakkula/hellowhale.git', branch:'master'
+        git url:'https://github.com/reddy2018/jenkins.git', branch:'main'
       }
     }
     
       stage("Build image") {
             steps {
                 script {
-                    myapp = docker.build("vamsijakkula/hellowhale:${env.BUILD_ID}")
+                    myapp = docker.build("reddy2018/jenkins:${env.BUILD_ID}")
                 }
             }
         }
@@ -21,7 +21,7 @@ pipeline {
       stage("Push image") {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker hub credentials') {
                             myapp.push("latest")
                             myapp.push("${env.BUILD_ID}")
                     }
@@ -29,14 +29,7 @@ pipeline {
             }
         }
 
-    
-    stage('Deploy App') {
-      steps {
-        script {
-          kubernetesDeploy(configs: "hellowhale.yml", kubeconfigId: "mykubeconfig")
-        }
-      }
-    }
+   
 
   }
 
